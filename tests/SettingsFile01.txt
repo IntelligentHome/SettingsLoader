@@ -1,0 +1,2 @@
+"WebAddress":"www.test.com.pl"
+"HostName":"Room1"
