@@ -29,7 +29,7 @@ function run_tests {
     cd ${TEST_DIR}
     cmake ../tests
     make
-    cp ../tests/*.txt .
+    ls -la ../tests/
     ./SettingsLoader_tests
     retval=$?
     rm SettingsLoader_tests

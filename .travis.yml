@@ -1,8 +1,43 @@
 language:
     - cpp
 
+os:
+#    - linux
+    - osx
+
+compiler:
+    - gcc-5
+    - clang
+
+matrix:
+    include:
+#        - os: linux
+#          compiler: gcc
+#          addons:
+#              apt:
+#                  sources: ['ubuntu-toolchain-r-test']
+#                  packages: ['g++-4.8']
+#          env: COMPILER=g++-4.8
+
+        - os: linux
+          compiler: gcc
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test']
+                  packages: ['g++-4.9']
+          env: COMPILER=g++-4.9
+
+        - os: linux
+          compiler: gcc
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test']
+                  packages: ['g++-5']
+          env: COMPILER=g++-5
+
 before_install:
-    - sudo apt-get update -qq
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
     - git clone https://github.com/IntelligentHome/External.git ../External
     - pushd ../External
     - git submodule update --init --remote --recursive
@@ -14,9 +49,14 @@ before_install:
     - echo ${TRAVIS_BRANCH}
 
 install:
-    - sudo apt-get install -qq gcc-avr binutils-avr avr-libc
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq gcc-avr binutils-avr avr-libc; fi
+#    - if [ "$COMPILER" == "g++-4.8" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+    - if [ "$COMPILER" == "g++-4.9" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+    - if [ "$COMPILER" == "g++-5" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 script:
+    - gcc --version
+    - g++ --version
     - ./build.sh -bt
 
 notifications:
